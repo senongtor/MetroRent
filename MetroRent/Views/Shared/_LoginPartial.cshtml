@@ -1,0 +1,50 @@
+﻿@using Microsoft.AspNet.Identity
+@using Microsoft.AspNet.Identity.EntityFramework
+@using MetroRent.Models
+
+@if (Request.IsAuthenticated)
+{
+    var userId = User.Identity.GetUserId();
+    string avatarPath = "~/Images/Profile/default.png";
+    using (var db = new ApplicationDbContext())
+    {
+        var currentUser = db.Users.Find(userId);
+        if (currentUser.AvatarPath != null)
+        {
+            avatarPath = currentUser.AvatarPath;
+        }
+    }
+    var currentUserName = string.Empty;
+    foreach (var c in User.Identity.GetUserName())
+    {
+        if (c == '@')
+        {
+            break;
+        }
+        currentUserName += c;
+    }
+
+    using (Html.BeginForm("LogOff", "Account", FormMethod.Post, new { id = "logoutForm", @class = "navbar-right" }))
+    {
+        @Html.AntiForgeryToken()
+
+        <ul class="nav navbar-nav navbar-right">
+            <li>
+                <div style="padding-top: 5px;">
+                    <a href='@Url.Action("AccountProfile", "Home")'>
+                        <img src='@Url.Content(avatarPath)' style="width: 40px; height:40px;" />
+                    </a>
+                    @Html.ActionLink(currentUserName, "AccountProfile", "Home", routeValues: null, htmlAttributes: new { title = "Manage" })
+                </div>
+            </li>
+            <li><a href="javascript:document.getElementById('logoutForm').submit()">Log off</a></li>
+        </ul>
+    }
+}
+else
+{
+    <ul class="nav navbar-nav navbar-right">
+        <li>@Html.ActionLink("Register", "Register", "Account", routeValues: null, htmlAttributes: new { id = "registerLink" })</li>
+        <li>@Html.ActionLink("Log in", "Login", "Account", routeValues: null, htmlAttributes: new { id = "loginLink" })</li>
+    </ul>
+}

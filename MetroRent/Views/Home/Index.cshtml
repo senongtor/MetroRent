@@ -1,0 +1,218 @@
+﻿@model MetroRent.Models.HomeIndexViewModel
+
+@{
+    ViewBag.Title = "Home Page";
+}
+
+<div class="jumbotron">
+    <h1>MetroRent</h1>
+    <h2>A place where you can find your perfect room/tenant in New York City!</h2>
+    <br />
+    <img src="~/Images/cover_image_1.jpg" height=500 width=1000 />
+</div>
+
+<div class="row">
+    <div class="col-md-6">
+        <h2>Find your perfect rooms for rent now</h2>
+        <p>
+            MetroRent is a place you can find your perfect rooms for rent in New York city!
+            Post your room requests and we can do a room match for you!
+        </p>
+        <p><a class="btn btn-warning" onclick="location.href='@Url.Action("Index", "SeekRoom")'">Find a room &raquo;</a></p>
+    </div>
+    <div class="col-md-6">
+        <h2>Find your tenants as soon as possible</h2>
+        <p>MetroRent is a place you can find your perfect tenants in New York city!
+           If you are a landlord, post your room requests and we can help you find your tenant as soon as possbile!
+        </p>
+        <p><a class="btn btn-danger" onclick="location.href='@Url.Action("Index", "SeekTenant")'">Find a tenant &raquo;</a></p>
+    </div>
+</div>
+
+<br />
+<div>
+    <h2>Latest Available Rooms    <a class="btn btn-warning" onclick="location.href='@Url.Action("Index", "SeekTenant")'">Find more &raquo;</a></h2>
+</div>
+
+
+<table class="table table-striped" >
+    <tr>
+        <th>
+            @*@Html.DisplayNameFor(model => model.Username)*@
+        </th>
+        <th>
+            @Html.DisplayNameFor(m => m.SeekTenantRequests.First().RoomRegion)
+        </th>
+        @*<th>
+                @Html.DisplayNameFor(model => model.Address)
+            </th>*@
+        <th>
+            @Html.DisplayNameFor(m => m.SeekTenantRequests.First().MonthlyRentalAmount)
+        </th>
+        @*<th>
+                @Html.DisplayNameFor(model => model.RoomType)
+            </th>*@
+        <th>
+            @Html.DisplayNameFor(m => m.SeekTenantRequests.First().Gender)
+        </th>
+        <th>
+            @Html.DisplayNameFor(m => m.SeekTenantRequests.First().RentalStartDate)
+        </th>
+        <th>
+            @Html.DisplayNameFor(m => m.SeekTenantRequests.First().RequestCreateTime)
+        </th>
+        <th>
+            @Html.DisplayNameFor(m => m.SeekTenantRequests.First().ContactPersonName)
+        </th>
+        <th>
+            @Html.DisplayNameFor(m => m.SeekTenantRequests.First().ContactPersonPhone)
+        </th>
+        <th>
+            @Html.DisplayNameFor(m => m.SeekTenantRequests.First().ContactPersonEmail)
+        </th>
+        <th>
+            @*@Html.DisplayNameFor(model => model.IsRequestActive)*@
+        </th>
+        <th></th>
+    </tr>
+
+    @foreach (var item in Model.SeekTenantRequests)
+    {
+        <tr>
+            <td>
+                <img src=@Url.Content(item.RoomImages.First().filePath) style="max-width:200px; max-height:200px;" />
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.RoomRegion)
+            </td>
+            @*<td>
+                    @Html.DisplayFor(modelItem => item.Address)
+                </td>*@
+            <td>
+                @Html.DisplayFor(modelItem => item.MonthlyRentalAmount)
+            </td>
+            @*<td>
+                    @Html.DisplayFor(modelItem => item.RoomType)
+                </td>*@
+            <td>
+                @Html.DisplayFor(modelItem => item.Gender)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.RentalStartDate)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.RequestCreateTime)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ContactPersonName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ContactPersonPhone)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ContactPersonEmail)
+            </td>
+            <td>
+                @Html.ActionLink("Details", "Details", "SeekTenant", new { id = item.Id }, new { @class = "btn btn-mine btn-lg", @style = "color:white" })
+            </td>
+        </tr>
+    }
+
+</table>
+
+<br />
+<div>
+    <h2>
+        Latest Seeking Room Requests    <a class="btn btn-danger" onclick="location.href='@Url.Action("Index", "SeekRoom")'">Find more &raquo;</a>
+    </h2>
+</div>
+
+<table class="table table-striped">
+    <tr>
+        <th>
+
+        </th>
+        <th>
+            Rental Budget Range
+        </th>
+        <th>
+            Interested Room Regions
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.SeekRoomRequests.First().Description)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.SeekRoomRequests.First().Gender)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.SeekRoomRequests.First().RentalStartDate)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.SeekRoomRequests.First().RequestCreateTime)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.SeekRoomRequests.First().ContactPersonName)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.SeekRoomRequests.First().ContactPersonPhone)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.SeekRoomRequests.First().ContactPersonEmail)
+        </th>
+        <th></th>
+    </tr>
+
+    @foreach (var item in Model.SeekRoomRequests)
+    {
+        <tr>
+            <td>
+                @if (item.ProfileImagePath != null)
+                {
+                    <img src=@Url.Content(item.ProfileImagePath) style="max-width:100px; max-height:100px; " />
+                }
+                else
+                {
+                    <img src="~/icon-user-default.png" style="max-width:100px; max-height:100px; " />
+                }
+            </td>
+            <td>
+                $@Html.DisplayFor(modelItem => item.BudgetLowerBound) <br />
+                To $@Html.DisplayFor(modelItem => item.BudgetUpperBound)
+            </td>
+            <td>
+                @foreach (var a in item.RequestLocations)
+                {
+                    @Html.DisplayFor(modelItem => a.Region)<br />
+                }
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Description)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Gender)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.RentalStartDate)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.RequestCreateTime)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ContactPersonName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ContactPersonPhone)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ContactPersonEmail)
+            </td>
+            <td>
+                @Html.ActionLink("Details", "Details", "SeekRoom", new { id = item.Id }, new { @class = "btn btn-mine btn-lg", @style = "color:white" })
+
+            </td>
+        </tr>
+    }
+
+</table>
+
+<a href="#">Back to Top</a>

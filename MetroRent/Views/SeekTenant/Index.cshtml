@@ -1,0 +1,168 @@
+﻿@model IEnumerable<DataLayer.SeekTenantRequest>
+
+@{
+    ViewBag.Title = "Index";
+}
+
+<br />
+
+<h2>Seek Tenant Requests</h2>
+
+<p>
+    <div class="Create">
+        <button type="submit" class="btn btn-danger btn-lg" btn-lg onclick="location.href='@Url.Action("Create", "SeekTenant")'" style="width: 300px">
+            Create your seek tenant request!
+        </button>
+    </div>
+</p>
+
+<br />
+
+<p>
+    <table>
+        <tr>
+            @using (Html.BeginForm("IndexSearchKeyWord", "SeekTenant"))
+            {
+                <td>
+                    <input type="text" placeholder="Description, Name, Phone or Email" name="keyWord" style="text-align: left" size="100" class="btn btn-default" />
+                </td>
+                <td>
+                    <input type="submit" value="Search" size="30" class="btn btn-mine" btn-lg />
+                    @*<input type="submit" name="" value="Submit" onclick="location.href='@Url.Action("Add", "Configure", new { ipValue =@[ValueOfTextBox], TypeId = 1 })'" />*@
+                </td>
+            }
+        </tr>
+        <tr>
+            @using (Html.BeginForm("Index", "SeekTenant", FormMethod.Post, new { id = "TheForm" }))
+            {
+                <td>
+                    @Html.DropDownList("regionFilter", new List<SelectListItem>
+                        {
+                            new SelectListItem{ Text="Not Specified", Value = "99" },
+                            new SelectListItem{ Text="Downtown Manhattan", Value = "0" },
+                            new SelectListItem{ Text="Midtown Manhattan", Value = "1" },
+                            new SelectListItem{ Text="Uptown Manhattan", Value = "2" },
+                            new SelectListItem{ Text="Upper Manhattan", Value = "3" },
+                            new SelectListItem{ Text="Roosevelt Island", Value = "4" },
+                            new SelectListItem{ Text="Brooklyn", Value = "5" },
+                            new SelectListItem{ Text="Queens", Value = "6" },
+                            new SelectListItem{ Text="Bronx", Value = "7" },
+                            new SelectListItem{ Text="Staten Island", Value = "8" },
+                            new SelectListItem{ Text="Northeast New Jersey", Value = "9" },
+                            new SelectListItem{ Text="Westchester County", Value = "10" },
+                            new SelectListItem{ Text="Long Island", Value = "11" },
+                        },
+                        new { @class = "btn btn-default" }
+                        //"Location filer"
+                        //new
+                        //{
+                        //    onchange = "document.getElementById('TheForm').submit();"
+                        //}
+                    )
+                </td>
+                <td>
+                    <input type='submit' value='Region Filter' size="30" class="btn btn-mine" btn-lg />
+
+                </td>
+            }
+        </tr>
+
+    </table>
+
+</p>
+
+<br />
+
+<table class="table table-striped">
+    <tr>
+        <th>
+            @*@Html.DisplayNameFor(model => model.Username)*@
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.RoomRegion)
+        </th>
+        @*<th>
+            @Html.DisplayNameFor(model => model.Address)
+        </th>*@
+        <th>
+            @Html.DisplayNameFor(model => model.MonthlyRentalAmount)
+        </th>
+        @*<th>
+            @Html.DisplayNameFor(model => model.RoomType)
+        </th>*@
+        <th>
+            @Html.DisplayNameFor(model => model.Gender)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.RentalStartDate)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.RequestCreateTime)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.ContactPersonName)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.ContactPersonPhone)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.ContactPersonEmail)
+        </th>
+        <th>
+            @*@Html.DisplayNameFor(model => model.IsRequestActive)*@
+        </th>
+        <th></th>
+    </tr>
+
+@foreach (var item in Model) {
+    <tr>
+        <td>
+            @if(item.RoomImages.First() != null && item.RoomImages.First().filePath != null)
+            {
+                <img src=@Url.Content(item.RoomImages.First().filePath) style="max-width:200px; max-height:200px; " />
+            } else
+            {
+                <img src = "~/Images/RoomImages/room_default.jpg" style="max-width:200px; max-height:200px; " />
+            }
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.RoomRegion)
+        </td>
+        @*<td>
+            @Html.DisplayFor(modelItem => item.Address)
+        </td>*@
+        <td>
+            @Html.DisplayFor(modelItem => item.MonthlyRentalAmount)
+        </td>
+        @*<td>
+            @Html.DisplayFor(modelItem => item.RoomType)
+        </td>*@
+        <td>
+            @Html.DisplayFor(modelItem => item.Gender)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.RentalStartDate)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.RequestCreateTime)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.ContactPersonName)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.ContactPersonPhone)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.ContactPersonEmail)
+        </td>
+        <td>
+            @Html.ActionLink("Details", "Details", new { id = item.Id }, new { @class = "btn btn-mine btn-lg", @style = "color:white" })
+            @*@Html.ActionLink("Edit", "Edit", new { id=item.Id }) |
+            @Html.ActionLink("Details", "Details", new { id=item.Id }) |
+            @Html.ActionLink("Delete", "Delete", new { id=item.Id })*@
+        </td>
+    </tr>
+}
+
+</table>
+<a href="#">Back to Top</a>

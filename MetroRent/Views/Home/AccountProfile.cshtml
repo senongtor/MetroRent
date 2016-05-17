@@ -1,0 +1,195 @@
+﻿@model MetroRent.Models.ProfileViewModel
+
+@{
+    ViewBag.Title = "Profile";
+}
+
+<br />
+<h2>Profile</h2>
+<br />
+
+<div id="accountInfo" style="clear:both;">
+    <h4>Account Information</h4>
+    <dl class="dl-horizontal" id="dl-account" style="display:inline-table; clear:both;">
+        <dt>
+            @if (Model.AvatarPath != null)
+            {
+                <img src=@Url.Content(Model.AvatarPath) style="max-width:100px; max-height:100px; " />
+            }
+            else
+            {
+                <img src="~/Images/Profile/default.png" style="max-width:100px; max-height:100px; " />
+            }
+        </dt>
+        @using (Html.BeginForm("AccountProfile", "Home", FormMethod.Post, new { enctype = "multipart/form-data" }))
+        {
+            <dd>
+                @Html.TextBoxFor(model => model.Avatar, new { type = "file", Accept = "image/*" })
+                <br />
+                <input type="submit" value="Upload" class="btn btn-mine" />
+                <br />
+            </dd>
+        }
+        <dt>
+            @Html.DisplayNameFor(model => model.UserName)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.UserName)
+        </dd>
+
+        <dt>Password</dt>
+        <dd>
+            @Html.ActionLink("Change your password", "ChangePassword", "Manage")
+        </dd>
+    </dl>
+    <hr />
+</div>
+
+@if (Model.RoomRequests.Count() != 0)
+{
+    <div id="roomRequest" style="clear:both;">
+        <h4>Room Seek Posts</h4>
+        <table class="table table-striped">
+            <tr class="header" style="background-color: yellow;">
+                <th></th>
+                <th>Preferred Location</th>
+                <th>Anticipated Start Date</th>
+                <th>Budget</th>
+                <th>Post Status</th>
+                <th>Matches</th>
+            </tr>
+            @for (var i = 0; i < Model.RoomRequests.Count(); i++)
+            {
+                var rr = Model.RoomRequests.ElementAt(i);
+                <tr>
+                    <td>
+                        @Html.ActionLink("Details", "Details", "SeekRoom", new { Id = rr.Id }, new { @class = "btn btn-mine btn-lg", @style = "color:white" })
+                    </td>
+                    <td data-th="Preferred Location">
+                        @foreach (var a in rr.RequestLocations)
+                        {
+                            @Html.DisplayFor(modelItem => a.Region) <br />
+                        }
+                    </td>
+                    <td data-th="Anticipated Start Date">
+                        @Html.DisplayFor(modelItem => rr.RentalStartDate)
+                    </td>
+                    <td data-th="Budget">
+                        $@Html.DisplayFor(modelItem => rr.BudgetLowerBound)
+                        To
+                        $@Html.DisplayFor(modelItem => rr.BudgetUpperBound)
+                    </td>
+                    <td data-th="Post Status">
+                        @if (rr.IsRequestActive)
+                        {
+                            <p>Active</p>
+                        }
+                        else
+                        {
+                            <p>Inactive</p>
+                        }
+                    </td>
+                    <td >
+                        @if (rr.IsRequestActive && Model.RoomRequestMatches.ElementAt(i).Count() > 0)
+                        {
+                            <div class="matches">
+                                <table class="table table-bordered">
+                                    @foreach (var tr in Model.RoomRequestMatches.ElementAt(i))
+                                    {
+                                        <tr>
+                                            <td>
+                                                <a href='@Url.Action("Details", "SeekTenant", new { Id = tr.Id })'>@Html.DisplayFor(modelItem => tr.Title)</a>
+                                            </td>
+                                        </tr>
+                                    }
+                                </table>
+                            </div>
+                        }
+                        else
+                        {
+                            <span>No Matches</span>
+                        }
+                    </td>
+                </tr>
+            }
+        </table>
+        <hr />
+    </div>
+}
+else
+{
+    <h4>No Room Seeks</h4>
+}
+
+@if (Model.TenantRequests.Count() != 0)
+{
+    <div id="tenantRequest" style="clear:both;">
+        <h4>Tenant Seek Posts</h4>
+        <table class="table table-striped">
+            <tr class="header" bgcolor=orangered>
+                <th></th>
+                <th>Address</th>
+                <th>Available since</th>
+                <th>Rental</th>
+                <th>Post Status</th>
+                <th>Matches</th>
+            </tr>
+            @for (var i = 0; i < Model.TenantRequests.Count(); i++)
+            {
+                var tr = Model.TenantRequests.ElementAt(i);
+                <tr>
+                    <td>
+                        @Html.ActionLink("Details", "Details", "SeekTenant", new { Id = tr.Id }, new { @class = "btn btn-mine btn-lg", @style = "color:white" })
+                    </td>
+                    <td data-th="Address">
+                        @Html.DisplayFor(modelItem => tr.Address);
+                    </td>
+                    <td data-th="Available since">
+                        @Html.DisplayFor(modelItem => tr.RentalStartDate)
+                    </td>
+                    <td data-th="Rental">
+                        @Html.DisplayFor(modelItem => tr.MonthlyRentalAmount)
+                    </td>
+                    <td data-th="Post Status">
+                        @if (tr.IsRequestActive)
+                        {
+                            <p>Active</p>
+                        }
+                        else
+                        {
+                            <p>Inactive</p>
+                        }
+                    </td>
+                    <td >
+                        @if (tr.IsRequestActive && Model.TenantRequestMatches.ElementAt(i).Count() > 0)
+                        {
+                            <div class="matches">
+                                <table class="table table-striped">
+                                    @foreach (var rr in Model.TenantRequestMatches.ElementAt(i))
+                                    {
+                                        <tr>
+                                            <td>
+                                                <a href='@Url.Action("Details", "SeekRoom", new { Id = rr.Id })'>@Html.DisplayFor(modelItem => rr.Title)</a>
+                                            </td>
+                                        </tr>
+                                    }
+                                </table>
+                            </div>
+                        }
+                        else
+                        {
+                            <span>No Matches</span>
+                        }
+                    </td>
+                </tr>
+            }
+        </table>
+        <br />
+    </div>
+}
+else
+{
+    <h4>No Tenant Seeks</h4>
+}
+
+<a href="#">Back to Top</a>

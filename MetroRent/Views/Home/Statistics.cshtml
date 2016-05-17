@@ -1,0 +1,207 @@
+﻿@model DataLayer.SeekTenantRequest
+@{
+    ViewBag.Title = "Statistics";
+    var min = ViewData["min"];
+    var max = ViewData["max"];
+    var avg = ViewData["Avg"];
+    var region = ViewData["Region"];
+    var roomtype = ViewData["Type"];
+    var resultfound = ViewData["Found"];
+    char trend = '►';
+    if ((string)ViewData["trend"] == "Up")
+    {
+        trend = '▲';
+    }
+    else if ((string)ViewData["trend"] == "Down")
+    {
+        trend = '▼';
+    }
+}
+
+<div class="container">
+    <div class="row">
+        <div class="col-lg-12">
+            <h1 style="color:deepskyblue" class="page-header">
+                Statistics Page
+                <small>You can understand market trends here</small>
+            </h1>
+            <ol class="breadcrumb">
+                <li>
+                    <h4>Search for a specific time range</h4>
+                    
+                    @using (Html.BeginForm("Statistics", "Home", FormMethod.Post))
+                    {
+                        @Html.AntiForgeryToken()
+                        <span>From</span>
+                        <span>
+                            <input type="date" required name="startdate" title="startdate" id="startdate" data-format="YYYY-MM-DD" data-template="YYYY MMM D" style="text-align: left" size="60" class="btn btn-default">
+                            <span>to</span>
+                            <input type="date" required name="enddate" title="enddate" id="enddate" data-format="YYYY-MM-DD" data-template="YYYY MMM D" style="text-align: left" size="60" class="btn btn-default">
+
+                            <br />
+                            <span>Region</span>
+                            @Html.DropDownList("Region", new List<SelectListItem>
+                                      {
+                                      new SelectListItem{ Text="Downtown Manhattan", Value = "DowntownManhattan" },
+                                      new SelectListItem{ Text="Midtown Manhattan", Value = "MidtownManhattan" },
+                                      new SelectListItem{ Text="Uptown Manhattan", Value = "UptownManhattan" },
+                                      new SelectListItem{ Text="Upper Manhattan", Value = "UpperManhattan" },
+                                      new SelectListItem{ Text="Roosevelt Island", Value = "RooseveltIsland" },
+                                      new SelectListItem{ Text="Brooklyn", Value = "Brooklyn" },
+                                      new SelectListItem{ Text="Queens", Value = "Queens" },
+                                      new SelectListItem{ Text="Bronx", Value = "Bronx" },
+                                      new SelectListItem{ Text="Staten Island", Value = "StatenIsland" },
+                                      new SelectListItem{ Text="Northeast New Jersey", Value = "NortheastNewJersey" },
+                                      new SelectListItem{ Text="Westchester County", Value = "WestchesterCounty" },
+                                      new SelectListItem{ Text="Long Island", Value = "LongIsland" },
+                                      },
+                                      new { @class = "btn btn-default" })
+                            <span>RoomType</span>
+                            @Html.DropDownList("RoomType", new List<SelectListItem>
+                                 {
+
+                                     new SelectListItem { Text="Single Room",Value="SingleRoom"},
+                                     new SelectListItem { Text="Living Room", Value="LivingRoom"},
+                                     new SelectListItem { Text="Studio", Value="Studio"},
+                                     new SelectListItem { Text="1 Bedroom 1 Bathroom", Value="OneBedroomOneBathroom"},
+                                     new SelectListItem { Text="2 Bedroom 1 Bathroom", Value="TwoBedroomOneBathroom"},
+                                     new SelectListItem { Text="2 Bedroom 2 Bathroom", Value="TwoBedroomTwoBathroom"},
+                                     new SelectListItem { Text="3 Bedroom 1 Bathroom", Value="ThreeBedroomOneBathroom"},
+                                     new SelectListItem { Text="3 Bedroom 2 Bathroom",Value="ThreeBedroomTwoBathroom"},
+                                     new SelectListItem { Text="3 Bedroom 3 Bathroom",Value="ThreeBedroomThreeBathroom"},
+                                     new SelectListItem { Text="4 Bedroom 1 Bathroom",Value="FourBedroomOneBathroom"},
+                                     new SelectListItem { Text="4 Bedroom 2 Bathroom",Value="FourBedroomTwoBathroom"},
+                                     new SelectListItem { Text="4 Bedroom 3 Bathroom",Value="FourBedroomThreeBathRoom"},
+                                     new SelectListItem { Text="Others",Value="Others"},
+                                 },
+                                new { @class = "btn btn-default" })
+
+                            <input type="submit" value="Search" size="30" class="btn btn-mine" btn-lg />
+                        </span>
+                    }
+
+                </li>
+            </ol>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <p style="text-align:right">
+                <span>
+                    Search Result for @roomtype @region
+                </span>
+            </p>
+
+            <ol style="text-align:right" class="breadcrumb">
+                @{
+                    if (ViewBag.ShowResult == true)
+                    {
+                        if (ViewBag.Found == 1)
+                        {
+                            <li>
+                                RESULT NOT FOUND
+                            </li>
+                        }
+                        else
+                        {
+                            <li>
+                                Minimum Rent
+                            </li>
+                            <li>
+                                @min
+                            </li>
+                            <li>
+                                Maximum Rent
+                            </li>
+                            <li>
+                                @max
+                            </li>
+                            <li>
+                                Average Rent
+                            </li>
+                            <li>
+                                @avg
+                            </li>
+                            <li>
+                                Trend: @trend @ViewData["trend"]
+                            </li>
+                        }
+                    }
+                }
+
+            </ol>
+        </div>
+
+    </div>
+
+    <div class="row">
+        <div class="col-md-4">
+
+            <img src="@Url.Action("GenerateChart1")" class="img-responsive">
+
+            <h4 style="color:deepskyblue">
+                Minimum rent throughout each region
+            </h4>
+
+        </div>
+        <div class="col-md-4">
+
+            <img src="@Url.Action("GenerateChart2")" class="img-responsive">
+
+            <h4 style="color:deepskyblue">
+                Average Rent throughout each region
+            </h4>
+
+        </div>
+        <div class="col-md-4">
+
+            <img src="@Url.Action("GenerateChart3")" class="img-responsive">
+
+            <h4 style="color:deepskyblue">
+                Max Rent throughout each region
+            </h4>
+
+        </div>
+    </div>
+    <br/>
+    
+    <div class="row">
+        <div class="col-md-4">
+
+            <img src="@Url.Action("GenerateChart4")" class="img-responsive">
+
+            <h4 style="color:deepskyblue">
+                Minimum rent throughout each Room Type
+            </h4>
+
+        </div>
+        <div class="col-md-4">
+            <img src="@Url.Action("GenerateChart5")" class="img-responsive">
+
+            <h4 style="color:deepskyblue">
+                Average rent throughout each Room Type
+            </h4>
+        </div>
+        <div class="col-md-4">
+            <img src="@Url.Action("GenerateChart6")" class="img-responsive">
+
+            <h4 style="color:deepskyblue">
+                Maximum rent throughout each Room Type
+            </h4>
+        </div>
+    </div>
+    <br />
+    <div class="row">
+        <div class="col-md-12">
+            <ol class="breadcrumb">
+                <li class="active">@Html.ActionLink("Jump to SeekTenant List", "Index", "SeekTenant")</li>
+                <li class="active">@Html.ActionLink("Jump to SeekRoom List", "Index", "SeekRoom")</li>
+                <li><a href="#">Back to Top</a></li>
+
+            </ol>
+        </div>
+
+    </div>
+    <hr>
+
+</div>

@@ -1,0 +1,189 @@
+﻿@model DataLayer.SeekRoomRequest
+@using Jmelosegui.Mvc.GoogleMap
+@using DataLayer
+@{
+    ViewBag.Title = "Details";
+    string profileImg = ViewBag.ProfileImg;
+    string isactive = Model.IsRequestActive ? " is active." : " is no longer available";
+    string emailto = "mailto:" + @Model.ContactPersonEmail;
+}
+
+<div class="container">
+    <div class="row">
+        <div class="col-lg-12">
+            <h1 style="color:orange" class="page-header" >
+                Room Seeking Post Detail             
+            </h1>
+            <ol class="breadcrumb">
+                <li class="active">I NEED A ROOM!</li>
+                @{
+                    if (User.Identity.Name == Model.Username)
+                    {
+                        <li>@Html.ActionLink("Edit My Post", "Edit", new { id = Model.Id })</li>
+                        <li>@Html.ActionLink("Delete My Post", "Delete", new { id = Model.Id })</li>
+                    }
+                }
+            </ol>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-lg-8">
+            <hr>
+            <p>
+                <i class="fa fa-clock-o"></i> Posted on @Model.RequestCreateTime.
+                <h6>Post @isactive</h6>
+            </p>
+            
+            <p class="lead">@Model.Title</p>
+           
+            <p>@Model.Description</p>
+            <div class="well">
+                
+                <div class="row">
+                    <div class="col-lg-6">
+                        <h4 >Some Recent Posts</h4>
+                        <ul class="list-unstyled">
+                            @foreach (KeyValuePair<int,string> i in ViewBag.List)
+                            {
+                                string addr = i.Key.ToString();
+                                string title = i.Value.ToString();
+                                <li>
+                                    <a href=@addr>@title</a>
+                                </li>
+                            }                      
+                        </ul>
+                    </div>
+                    <div class="col-lg-6">
+                        <h4 style="text-align:center">Google Map View</h4>
+                        <ul class="list-unstyled">
+                            
+                            @(Html.GoogleMap()
+                            .Name("map")
+                            .Height(310)
+                            .Width(320)
+                            .FitToMarkersBounds(true)
+                            .MarkersGeocoding(true)
+                            .Markers(c =>
+                            {
+                                foreach (var location in Model.RequestLocations)
+                                {
+                                    if (location.Region == DataLayer.Region.DowntownManhattan)
+                                    {
+                                        c.Add().Address("Downtown Manhattan, New York, New York");
+                                    }
+                                    else if(location.Region == DataLayer.Region.MidtownManhattan)
+                                    {
+                                        c.Add().Address("Midtown Manhattan, New York, New York");
+                                    }
+                                    else if (location.Region == DataLayer.Region.UptownManhattan)
+                                    {
+                                        c.Add().Address("Uptown Manhattan, New York, New York");
+                                    }
+                                    else if (location.Region == DataLayer.Region.UpperManhattan)
+                                    {
+                                        c.Add().Address("Upper Manhattan, New York, New York");
+                                    }
+                                    else if (location.Region == DataLayer.Region.Bronx)
+                                    {
+                                        c.Add().Address("Bronx, New York, New York");
+                                    }
+                                    else if (location.Region == DataLayer.Region.Brooklyn)
+                                    {
+                                        c.Add().Address("Brooklyn, New York, New York");
+                                    }
+                                    else if (location.Region == DataLayer.Region.Queens)
+                                    {
+                                        c.Add().Address("Queens, New York, New York");
+                                    }
+                                    else if (location.Region == DataLayer.Region.LongIsland)
+                                    {
+                                        c.Add().Address("Long Island, New York, New York");
+                                    }
+                                    else if (location.Region == DataLayer.Region.StatenIsland)
+                                    {
+                                        c.Add().Address("Staten Island, New York, New York");
+                                    }
+                                    else if (location.Region == DataLayer.Region.RooseveltIsland)
+                                    {
+                                        c.Add().Address("Roosevelt Island, New York, New York");
+                                    }
+                                    else if (location.Region == DataLayer.Region.NortheastNewJersey)
+                                    {
+                                        c.Add().Address("Jersey City, New Jersey, New Jersey");
+                                    }
+                                    else if (location.Region == DataLayer.Region.WestchesterCounty)
+                                    {
+                                        c.Add().Address("Westchester County, New York, New York");
+                                    }
+
+                                };
+                            })
+                            .Layers(l => { l.AddTransitLayer(); })
+                            .Zoom(12))
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <hr>
+
+            <div>
+                @Html.Partial("_SendEmailPartial", new EmailContent())
+            </div>
+        </div>
+        <div class="col-lg-4">
+            <div class="well">
+                <div class="input-group">
+                    <hr>
+                    <img src="@Url.Content(profileImg)" height=300 width=300 />
+                    <hr>
+                    <h4>@Html.DisplayFor(model => model.Username)</h4>
+                </div>
+                
+                <!-- /input-group -->
+            </div>
+            <!-- /well -->
+
+            <div class="well">
+                <dl class="dl-horizontal">                       
+                    <dt>
+                        @Html.DisplayNameFor(model => model.ContactPersonName)
+                    </dt>
+                    <dd>
+                        @Html.DisplayFor(model => model.ContactPersonName)
+                    </dd>
+                    <dt>
+                        @Html.DisplayNameFor(model => model.ContactPersonEmail)
+                    </dt>
+                    <dd>
+                        <a href=@emailto>@Model.ContactPersonEmail</a>
+                    </dd>
+                    <dt>
+                        @Html.DisplayNameFor(model => model.ContactPersonPhone)
+                    </dt>
+                    <dd>
+                        @Html.DisplayFor(model => model.ContactPersonPhone)
+                    </dd>
+                    <dt>
+                        @Html.DisplayNameFor(model => model.Gender)
+                    </dt>
+                    <dd>
+                        @Html.DisplayFor(model => model.Gender)
+                    </dd>
+                </dl>
+            </div>
+
+            <div class="well">
+                <p style="border-bottom-style:dotted; font-family:verdana; ">Rental Budget: @Model.BudgetLowerBound - @Model.BudgetUpperBound </p>
+                <p style="border-bottom-style:dotted; font-family:verdana;">Anticipated Start Date: @Model.RentalStartDate</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<p>
+    @Html.ActionLink("Back to previous page", null, null, null, new { href = Request.UrlReferrer }) | <a href="#">Back to Top</a>
+</p>
+@section scripts
+{
+    @(Html.GoogleMap().ScriptRegistrar())
+}
